@@ -1,4 +1,6 @@
 import crypto from "crypto";
+import { execFile } from "child_process";
+import { promisify } from "util";
 import {
   readTenantConfig,
   writeTenantConfig,
@@ -22,16 +24,45 @@ export type OpenClawStatus = {
   }>;
 };
 
+const execFileAsync = promisify(execFile);
+
+async function getGatewayStatusFromCli(): Promise<
+  OpenClawStatus["gatewayStatus"]
+> {
+  try {
+    const { stdout } = await execFileAsync("openclaw", [
+      "gateway",
+      "status",
+      "--json",
+    ]);
+    const data = JSON.parse(stdout);
+
+    const serviceStatus: string | undefined =
+      data?.service?.status ?? data?.status;
+    const probeOk: boolean | undefined =
+      data?.probe?.ok ?? data?.rpc?.ok ?? data?.gateway?.ok;
+
+    if (probeOk === true) return "ok";
+    if (serviceStatus === "active" || serviceStatus === "running") {
+      return "degraded";
+    }
+    return "offline";
+  } catch {
+    // If the CLI is missing or JSON shape is unexpected, fall back to "offline".
+    return "offline";
+  }
+}
+
 export async function getOpenClawStatus(
   tenantId: string,
 ): Promise<OpenClawStatus> {
-  // For now this is a stub that only looks at the per-tenant config file.
-  // Later you can replace this with real calls to your OpenClaw gateway
-  // (CLI or HTTP) using OPENCLAW_CONFIG_PATH pointing at this tenant's config.
   const config = await readTenantConfig(tenantId);
+  const gatewayStatus = await getGatewayStatusFromCli().catch(
+    () => "offline" as const,
+  );
 
   return {
-    gatewayStatus: "ok",
+    gatewayStatus,
     tenantId,
     channels: {
       telegram: {
