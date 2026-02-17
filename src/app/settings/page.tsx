@@ -1,21 +1,16 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { parseSessionValue, type SessionPayload } from "@/lib/auth";
+import { parseSessionValue } from "@/lib/auth";
 import { getTenantIdFromEmail, readTenantConfig } from "@/lib/tenant";
 import SettingsClient from "./SettingsClient";
 
-function requireSessionFromCookies(): SessionPayload {
-  const cookieStore = cookies();
+export default async function SettingsPage() {
+  const cookieStore = await cookies();
   const raw = cookieStore.get("oc_session")?.value ?? null;
   const session = parseSessionValue(raw);
   if (!session) {
     redirect("/login");
   }
-  return session;
-}
-
-export default async function SettingsPage() {
-  const session = requireSessionFromCookies();
   const tenantId = getTenantIdFromEmail(session.email);
   const config = await readTenantConfig(tenantId);
 

@@ -1,21 +1,16 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { parseSessionValue, type SessionPayload } from "@/lib/auth";
+import { parseSessionValue } from "@/lib/auth";
 import { getTenantIdFromEmail } from "@/lib/tenant";
 import { getOpenClawStatus } from "@/lib/openclaw";
 
-function requireSessionFromCookies(): SessionPayload {
-  const cookieStore = cookies();
+export default async function DashboardPage() {
+  const cookieStore = await cookies();
   const raw = cookieStore.get("oc_session")?.value ?? null;
   const session = parseSessionValue(raw);
   if (!session) {
     redirect("/login");
   }
-  return session;
-}
-
-export default async function DashboardPage() {
-  const session = requireSessionFromCookies();
   const tenantId = getTenantIdFromEmail(session.email);
   const status = await getOpenClawStatus(tenantId);
 
