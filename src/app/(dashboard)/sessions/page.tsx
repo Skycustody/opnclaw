@@ -1,4 +1,14 @@
-export default function SessionsPage() {
+import { cookies } from "next/headers";
+import { parseSessionValue } from "@/lib/auth";
+import { getTenantIdFromEmail } from "@/lib/tenant";
+import SessionsClient from "./SessionsClient";
+
+export default async function SessionsPage() {
+  const cookieStore = await cookies();
+  const raw = cookieStore.get("oc_session")?.value ?? null;
+  const session = parseSessionValue(raw);
+  const tenantId = session ? getTenantIdFromEmail(session.email) : "";
+
   return (
     <>
       <div className="mb-6">
@@ -7,11 +17,7 @@ export default function SessionsPage() {
           View and manage active chat sessions for this tenant.
         </p>
       </div>
-      <div className="oc-card">
-        <p className="text-sm text-[var(--oc-muted)]">
-          Session management coming soon. See Overview for basic session info.
-        </p>
-      </div>
+      <SessionsClient tenantId={tenantId} />
     </>
   );
 }

@@ -1,4 +1,15 @@
-export default function ChannelsPage() {
+import { cookies } from "next/headers";
+import { parseSessionValue } from "@/lib/auth";
+import { getTenantIdFromEmail, readTenantConfig } from "@/lib/tenant";
+import ChannelsClient from "./ChannelsClient";
+
+export default async function ChannelsPage() {
+  const cookieStore = await cookies();
+  const raw = cookieStore.get("oc_session")?.value ?? null;
+  const session = parseSessionValue(raw);
+  const tenantId = session ? getTenantIdFromEmail(session.email) : "";
+  const config = await readTenantConfig(tenantId);
+
   return (
     <>
       <div className="mb-6">
@@ -7,11 +18,7 @@ export default function ChannelsPage() {
           Configure and manage chat channels for this tenant.
         </p>
       </div>
-      <div className="oc-card">
-        <p className="text-sm text-[var(--oc-muted)]">
-          Channel management coming soon. For now, use Settings to toggle channels.
-        </p>
-      </div>
+      <ChannelsClient initialChannels={config.channels} />
     </>
   );
 }
