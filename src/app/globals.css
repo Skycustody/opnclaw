@@ -67,6 +67,25 @@ body {
   background: var(--oc-bg);
 }
 
+.oc-nav-toggle {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--oc-radius);
+  cursor: pointer;
+  color: var(--oc-muted);
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.oc-nav-toggle:hover {
+  background: var(--oc-bg-elevated);
+  color: var(--oc-text);
+}
+
 .oc-brand-title {
   font-size: 16px;
   font-weight: 700;
@@ -74,12 +93,20 @@ body {
   color: var(--oc-text-strong);
 }
 
-.oc-brand-sub {
-  font-size: 10px;
+.oc-health-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
   font-weight: 500;
-  color: var(--oc-muted);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  color: var(--oc-text);
+}
+
+.oc-health-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--oc-ok);
 }
 
 .oc-nav {
@@ -88,6 +115,30 @@ body {
   padding: 16px 12px;
   background: var(--oc-bg);
   border-right: 1px solid var(--oc-border);
+}
+
+.oc-nav-group {
+  margin-bottom: 20px;
+}
+
+.oc-nav-group:last-child {
+  margin-bottom: 0;
+}
+
+.oc-nav-label {
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--oc-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.oc-nav-items {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
 .oc-nav-item {
@@ -109,7 +160,7 @@ body {
 }
 
 .oc-nav-item.active {
-  color: var(--oc-text-strong);
+  color: var(--oc-accent);
   background: var(--oc-accent-subtle);
 }
 
