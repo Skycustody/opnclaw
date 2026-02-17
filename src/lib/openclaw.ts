@@ -10,10 +10,23 @@ import {
 export type OpenClawStatus = {
   gatewayStatus: "ok" | "degraded" | "offline";
   tenantId: string;
+  model?: string;
   channels: {
     telegram: {
       enabled: boolean;
       pairingCode?: string;
+    };
+    whatsapp: {
+      enabled: boolean;
+    };
+    discord: {
+      enabled: boolean;
+    };
+    slack: {
+      enabled: boolean;
+    };
+    signal: {
+      enabled: boolean;
     };
   };
   sessions: Array<{
@@ -64,10 +77,23 @@ export async function getOpenClawStatus(
   return {
     gatewayStatus,
     tenantId,
+    model: config.model,
     channels: {
       telegram: {
         enabled: config.channels.telegram.enabled,
         pairingCode: config.channels.telegram.pairingCode,
+      },
+      whatsapp: {
+        enabled: config.channels.whatsapp.enabled,
+      },
+      discord: {
+        enabled: config.channels.discord.enabled,
+      },
+      slack: {
+        enabled: config.channels.slack.enabled,
+      },
+      signal: {
+        enabled: config.channels.signal.enabled,
       },
     },
     sessions: [

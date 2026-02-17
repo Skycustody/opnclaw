@@ -3,17 +3,45 @@ import path from "path";
 import fs from "fs/promises";
 
 export type TenantConfig = {
+  model?: string;
   channels: {
     telegram: {
       enabled: boolean;
       pairingCode?: string;
     };
+    whatsapp: {
+      enabled: boolean;
+    };
+    discord: {
+      enabled: boolean;
+    };
+    slack: {
+      enabled: boolean;
+    };
+    signal: {
+      enabled: boolean;
+    };
   };
 };
 
+export const DEFAULT_MODEL_ID = "gpt-4.1-mini";
+
 const DEFAULT_CONFIG: TenantConfig = {
+  model: DEFAULT_MODEL_ID,
   channels: {
     telegram: {
+      enabled: false,
+    },
+    whatsapp: {
+      enabled: false,
+    },
+    discord: {
+      enabled: false,
+    },
+    slack: {
+      enabled: false,
+    },
+    signal: {
       enabled: false,
     },
   },
@@ -57,6 +85,22 @@ export async function readTenantConfig(tenantId: string): Promise<TenantConfig> 
         telegram: {
           ...DEFAULT_CONFIG.channels.telegram,
           ...(parsed.channels?.telegram || {}),
+        },
+        whatsapp: {
+          ...DEFAULT_CONFIG.channels.whatsapp,
+          ...(parsed.channels?.whatsapp || {}),
+        },
+        discord: {
+          ...DEFAULT_CONFIG.channels.discord,
+          ...(parsed.channels?.discord || {}),
+        },
+        slack: {
+          ...DEFAULT_CONFIG.channels.slack,
+          ...(parsed.channels?.slack || {}),
+        },
+        signal: {
+          ...DEFAULT_CONFIG.channels.signal,
+          ...(parsed.channels?.signal || {}),
         },
       },
     };

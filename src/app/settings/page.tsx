@@ -1,7 +1,11 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { parseSessionValue } from "@/lib/auth";
-import { getTenantIdFromEmail, readTenantConfig } from "@/lib/tenant";
+import {
+  DEFAULT_MODEL_ID,
+  getTenantIdFromEmail,
+  readTenantConfig,
+} from "@/lib/tenant";
 import SettingsClient from "./SettingsClient";
 
 export default async function SettingsPage() {
@@ -38,7 +42,10 @@ export default async function SettingsPage() {
           </a>
         </header>
 
-        <SettingsClient initial={config.channels} />
+        <SettingsClient
+          initialChannels={config.channels}
+          initialModel={config.model ?? DEFAULT_MODEL_ID}
+        />
       </div>
     </div>
   );
