@@ -1,44 +1,67 @@
-import { cookies } from "next/headers";
-import { parseSessionValue } from "@/lib/auth";
-import { getTenantIdFromEmail } from "@/lib/tenant";
-import { getOpenClawStatus } from "@/lib/openclaw";
+import { getOpenClawInstances } from "@/lib/openclaw";
 
 export default async function InstancesPage() {
-  const cookieStore = await cookies();
-  const raw = cookieStore.get("oc_session")?.value ?? null;
-  const session = parseSessionValue(raw);
-  const tenantId = session ? getTenantIdFromEmail(session.email) : "";
-  const status = await getOpenClawStatus(tenantId);
+  const instances = await getOpenClawInstances().catch(() => []);
 
   return (
     <>
       <div className="mb-6">
         <h1 className="oc-page-title">Instances</h1>
         <p className="oc-page-sub">
-          View active gateway instances and their status.
+          Presence beacons from connected clients and nodes.
         </p>
       </div>
-      <div className="oc-card">
+
+      <section className="oc-card">
         <h2 className="text-[11px] font-medium uppercase tracking-wider text-[var(--oc-muted)] mb-3">
-          Gateway Instance
+          Connected Instances
         </h2>
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-[var(--oc-text)]">Status</span>
-            <span className={`oc-pill ${status.gatewayStatus === "ok" ? "ok" : status.gatewayStatus === "degraded" ? "warn" : "off"}`}>
-              {status.gatewayStatus}
-            </span>
+        <p className="text-sm text-[var(--oc-muted)] mb-4">
+          Presence beacons from the gateway and clients.
+        </p>
+
+        {instances.length === 0 ? (
+          <p className="text-sm text-[var(--oc-muted)]">
+            No instances connected.
+          </p>
+        ) : (
+          <div className="space-y-3">
+            {instances.map((inst) => (
+              <div
+                key={inst.id}
+                className="oc-card"
+                style={{ background: "var(--oc-bg-elevated)", padding: "12px" }}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="font-mono text-sm text-[var(--oc-text-strong)] mb-1">
+                      {inst.id}
+                    </div>
+                    <div className="text-xs text-[var(--oc-muted)] mb-2">
+                      {inst.ip} | {inst.role}
+                    </div>
+                    <div className="flex flex-wrap gap-1">
+                      {inst.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="text-[10px] px-2 py-0.5 rounded bg-[var(--oc-bg)] border border-[var(--oc-border)] text-[var(--oc-muted)]"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="text-right text-xs text-[var(--oc-muted)]">
+                    <div>just now</div>
+                    <div className="mt-1">Live stream</div>
+                    <button className="oc-btn-ghost mt-2 text-xs">Refresh</button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-[var(--oc-text)]">Tenant</span>
-            <span className="text-sm font-mono text-[var(--oc-muted)]">{status.tenantId}</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-[var(--oc-text)]">Model</span>
-            <span className="text-sm font-mono text-[var(--oc-muted)]">{status.model || "Not set"}</span>
-          </div>
-        </div>
-      </div>
+        )}
+      </section>
     </>
   );
 }

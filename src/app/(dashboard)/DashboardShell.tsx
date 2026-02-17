@@ -31,6 +31,10 @@ const navGroups = [
       { href: "/logs", label: "Logs" },
     ],
   },
+  {
+    label: "Resources",
+    items: [{ href: "https://docs.openclaw.ai", label: "Docs" }],
+  },
 ];
 
 export default function DashboardShell({

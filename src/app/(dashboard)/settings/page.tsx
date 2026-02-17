@@ -6,9 +6,8 @@ import {
   readTenantConfig,
 } from "@/lib/tenant";
 import SettingsClient from "./SettingsClient";
-import ConfigEditor from "./ConfigEditor";
 
-export default async function ConfigPage() {
+export default async function SettingsPage() {
   const cookieStore = await cookies();
   const raw = cookieStore.get("oc_session")?.value ?? null;
   const session = parseSessionValue(raw);
@@ -20,16 +19,13 @@ export default async function ConfigPage() {
       <div className="mb-6">
         <h1 className="oc-page-title">Config</h1>
         <p className="oc-page-sub">
-          Model, channels, and tenant configuration.
+          Model and chat channels for this tenant.
         </p>
       </div>
-      <div className="space-y-6">
-        <SettingsClient
-          initialChannels={config.channels}
-          initialModel={config.model ?? DEFAULT_MODEL_ID}
-        />
-        <ConfigEditor initialConfig={config} />
-      </div>
+      <SettingsClient
+        initialChannels={config.channels}
+        initialModel={config.model ?? DEFAULT_MODEL_ID}
+      />
     </>
   );
 }
