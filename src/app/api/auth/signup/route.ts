@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSessionCookie } from "@/lib/auth";
-import { verifyUser } from "@/lib/users";
+import { createUser } from "@/lib/users";
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
@@ -22,16 +22,15 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const user = await verifyUser(email, password);
-  if (!user) {
+  try {
+    const user = await createUser(email, password);
+    const response = NextResponse.json({ ok: true, tenantId: user.tenantId });
+    response.headers.append("Set-Cookie", createSessionCookie(user.email));
+    return response;
+  } catch (err: any) {
     return NextResponse.json(
-      { error: "Invalid email or password" },
-      { status: 401 },
+      { error: err.message || "Failed to create account" },
+      { status: 400 },
     );
   }
-
-  const response = NextResponse.json({ ok: true });
-  response.headers.append("Set-Cookie", createSessionCookie(user.email));
-  return response;
 }
-

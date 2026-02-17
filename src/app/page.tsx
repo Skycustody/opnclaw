@@ -16,16 +16,24 @@ export default function Home() {
         </div>
 
         <div className="space-y-4">
-          <a
-            href="/login"
-            className="inline-flex w-full items-center justify-center rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
-          >
-            Log in to your panel
-          </a>
+          <div className="flex gap-3">
+            <a
+              href="/signup"
+              className="inline-flex flex-1 items-center justify-center rounded-lg bg-zinc-900 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
+            >
+              Sign up
+            </a>
+            <a
+              href="/login"
+              className="inline-flex flex-1 items-center justify-center rounded-lg border border-zinc-300 px-4 py-2.5 text-sm font-medium text-zinc-900 transition hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-900"
+            >
+              Log in
+            </a>
+          </div>
           <p className="text-xs text-zinc-500 dark:text-zinc-500">
-            Once logged in, you&apos;ll be able to choose your chat apps,
-            follow pairing instructions, and see your sessions and logs—powered
-            by the shared OpenClaw gateway on your VPS.
+            Sign up to get your own personal OpenClaw tenant. Choose your chat
+            apps, follow pairing instructions, and see your sessions and
+            logs—powered by the shared OpenClaw gateway on your VPS.
           </p>
         </div>
       </main>
